@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class ResponseUtility {
 	
 	public static final String RESPONSE = "response";
+	public static final String SUCCESS = "success";
 	final HttpHeaders httpHeaders;
 	
 	ResponseUtility(){
