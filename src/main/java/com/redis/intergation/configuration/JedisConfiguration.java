@@ -12,6 +12,7 @@ import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration.JedisClientConfigurationBuilder;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -27,7 +28,7 @@ public class JedisConfiguration {
 
 	@Value("${redis.user}")
 	private String redisUser;
-	
+
 	@Value("${redis.password}")
 	private String redisPassword;
 
@@ -37,34 +38,33 @@ public class JedisConfiguration {
 	@Value("${redis.timeout}")
 	private int redisTimeout;
 
-	
-	/*
-	 * @Bean(name="jedisInstance") public Jedis initializeJedis() { return new
-	 * Jedis(redisURL); }
-	 */
-	
-	@Bean(name="jedisPool")
-	public JedisPool  getJedisPool() {
+	@Bean(name = "jedisInstance")
+	public Jedis initializeJedis() {
+		return new Jedis(redisURL);
+	}
+
+	@Bean(name = "jedisPool")
+	public JedisPool getJedisPool() {
 		JedisPoolConfig jedisPoolConfig = buildPoolConfig();
-		JedisPool jedisPool4 = new JedisPool(jedisPoolConfig,redisURL,redisPort,redisUser,redisPassword);
+		JedisPool jedisPool4 = new JedisPool(jedisPoolConfig, redisURL, redisPort, redisUser, redisPassword);
 		return jedisPool4;
 	}
-	
+
 	private JedisPoolConfig buildPoolConfig() {
-	    final JedisPoolConfig poolConfig = new JedisPoolConfig();
-	    poolConfig.setMaxTotal(128);
-	    poolConfig.setMaxIdle(128);
-	    poolConfig.setMinIdle(16);
-	    poolConfig.setTestOnBorrow(true);
-	    poolConfig.setTestOnReturn(true);
-	    poolConfig.setTestWhileIdle(true);
-	    poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
-	    poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
-	    poolConfig.setNumTestsPerEvictionRun(3);
-	    poolConfig.setBlockWhenExhausted(true);
-	    return poolConfig;
+		final JedisPoolConfig poolConfig = new JedisPoolConfig();
+		poolConfig.setMaxTotal(128);
+		poolConfig.setMaxIdle(128);
+		poolConfig.setMinIdle(16);
+		poolConfig.setTestOnBorrow(true);
+		poolConfig.setTestOnReturn(true);
+		poolConfig.setTestWhileIdle(true);
+		poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
+		poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
+		poolConfig.setNumTestsPerEvictionRun(3);
+		poolConfig.setBlockWhenExhausted(true);
+		return poolConfig;
 	}
-	
+
 //	@Bean(name = "jedisInstance")
 	public JedisConnectionFactory jedisConnectionFactory() {
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
